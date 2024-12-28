@@ -54,10 +54,10 @@ register(
           "origamifreak",
           "Apache 2 license",
           "2024",
-          "SixteenByNine",
+          "Sixteen By Nine",
           "*",
           [
-              (PFimage, "image", "Input image", None),
+              (PF_IMAGE, "image", "Input image", None),
               (PF_DRAWABLE, "drawable", "Input drawable", None),
           ],
           [],
