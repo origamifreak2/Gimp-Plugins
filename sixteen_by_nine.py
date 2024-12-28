@@ -7,7 +7,8 @@ def sixteen_by_nine(image, drawable):
 
     # make sure drawable is a layer
     drawable_type = pdb.gimp_drawable_type(drawable)
-    if drawable_type != 0:
+    if drawable_type != 0 and drawable_type != 1:
+        pdb.gimp_message(drawable_type)
         pdb.gimp_message("Please select a layer")
         return
     
