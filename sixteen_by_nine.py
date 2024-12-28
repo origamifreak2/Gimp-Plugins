@@ -10,8 +10,8 @@ def sixteen_by_nine(image, drawable):
     image.add_layer(foreground, 0)
 
     # get canvas width and height
-    canvas_width = pdb.gimp_image_width(image)
-    canvas_height = pdb.gimp_image_height(image)
+    canvas_width = image.width
+    canvas_height = image.height
 
     # get 16:9 width based on height
     width_16_9 = int(round((float(canvas_height) / 9) * 16))
