@@ -17,41 +17,42 @@ def sixteen_by_nine(image, drawable):
     background = drawable.copy()
     image.add_layer(background, 1)
 
-    # get canvas width and height
-    canvas_width = image.width
-    canvas_height = image.height
+    # get current/original canvas width and height
+    canvas_original_width = image.width
+    canvas_original_height = image.height
 
     # get 16:9 width based on height
-    width_16_9 = int(round(canvas_height / 9.0) * 16)
+    width_16_9 = int(round(canvas_original_height / 9.0) * 16)
     # get 16:9 height based on width
-    height_16_9 = int(round(canvas_width / 16.0) * 9)
+    height_16_9 = int(round(canvas_original_width / 16.0) * 9)
 
-    if(canvas_width < width_16_9): # canvas width needs to be increased
-        bg_scale = float(width_16_9) / float(canvas_width)
-        bg_width = canvas_width * bg_scale
-        bg_height = canvas_height * bg_scale
-        off_x = (width_16_9 - canvas_width) / 2
-        off_y = 0
-        canvas_width = width_16_9
-    elif(canvas_height < height_16_9): # canvas height needs to be increased
-        bg_scale = float(height_16_9) / float(canvas_height)
-        bg_width = canvas_width * bg_scale
-        bg_height = canvas_height * bg_scale
-        off_x = 0
-        off_y = (height_16_9 - canvas_height) / 2
-        canvas_height = height_16_9
+    # calculate new canvas width, height, background scale, and foreground offset, based on which dimension needs to be increased
+    if(canvas_original_width < width_16_9): # canvas width needs to be increased
+        canvas_new_width = width_16_9
+        canvas_new_height = canvas_original_height
+        bg_scale = float(width_16_9) / float(canvas_original_width)
+        fg_off_x = (width_16_9 - canvas_original_width) / 2
+        fg_off_y = 0
+    elif(canvas_original_height < height_16_9): # canvas height needs to be increased
+        canvas_new_width = canvas_original_width
+        canvas_new_height = height_16_9
+        bg_scale = float(height_16_9) / float(canvas_original_height)
+        fg_off_x = 0
+        fg_off_y = (height_16_9 - canvas_original_height) / 2
     else: # canvas is already 16:9
         pdb.gimp_message("Image is already 16:9")
         return
 
     # resize canvas and center foreground
-    pdb.gimp_image_resize(image, canvas_width, canvas_height, off_x, off_y)
+    pdb.gimp_image_resize(image, canvas_new_width, canvas_new_height, fg_off_x, fg_off_y)
 
     # resize background
+    bg_width = canvas_original_width * bg_scale
+    bg_height = canvas_original_height * bg_scale
     pdb.gimp_layer_scale(background, bg_width, bg_height, True)
 
     # blur background
-    blur_radius = canvas_height * canvas_width / 15000
+    blur_radius = bg_height * bg_width / 35000
     pdb.plug_in_gauss(image, background, blur_radius, blur_radius, 0)
 
     image.undo_group_end()
