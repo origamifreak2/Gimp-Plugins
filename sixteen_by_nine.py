@@ -4,20 +4,27 @@ from gimpfu import *
 
 # convert image to 16 x 9 with blurred background
 def sixteen_by_nine(image, drawable):
-    # pdb.gimp_message(drawable)
 
-    # create duplicate layer to use as foreground
-    foreground = drawable.copy()
-    image.add_layer(foreground, 0)
+    # make sure drawable is a layer
+    drawable_type = pdb.gimp_drawable_type(drawable)
+    if drawable_type != 0:
+        pdb.gimp_message("Please select a layer")
+        return
+    
+    image.undo_group_start()
+
+    # create duplicate layer to use as background
+    background = drawable.copy()
+    image.add_layer(background, 1)
 
     # get canvas width and height
     canvas_width = image.width
     canvas_height = image.height
 
     # get 16:9 width based on height
-    width_16_9 = int(round((float(canvas_height) / 9) * 16))
+    width_16_9 = int(round(canvas_height / 9.0) * 16)
     # get 16:9 height based on width
-    height_16_9 = int(round((float(canvas_width) / 16) * 9))
+    height_16_9 = int(round(canvas_width / 16.0) * 9)
 
     if(canvas_width < width_16_9): # canvas width needs to be increased
         bg_scale = float(width_16_9) / float(canvas_width)
@@ -33,16 +40,21 @@ def sixteen_by_nine(image, drawable):
         off_x = 0
         off_y = (height_16_9 - canvas_height) / 2
         canvas_height = height_16_9
+    else: # canvas is already 16:9
+        pdb.gimp_message("Image is already 16:9")
+        return
 
     # resize canvas and center foreground
     pdb.gimp_image_resize(image, canvas_width, canvas_height, off_x, off_y)
 
     # resize background
-    pdb.gimp_layer_scale(drawable, bg_width, bg_height, True)
+    pdb.gimp_layer_scale(background, bg_width, bg_height, True)
 
     # blur background
-    pdb.plug_in_gauss(image, drawable, 90, 90, 0)
+    blur_radius = canvas_height * canvas_width / 15000
+    pdb.plug_in_gauss(image, background, blur_radius, blur_radius, 0)
 
+    image.undo_group_end()
 
 register(
           "sixteen_by_nine",
