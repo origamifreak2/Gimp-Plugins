@@ -6,8 +6,8 @@ from gimpfu import *
 def sixteen_by_nine(image, drawable):
 
     # create duplicate layer to use as foreground
-    forground = drawable.copy()
-    image.add_layer(forground, 0)
+    foreground = drawable.copy()
+    image.add_layer(foreground, 0)
 
     # get canvas width and height
     canvas_width = pdb.gimp_image_width(image)
