@@ -22,9 +22,9 @@ def sixteen_by_nine(image, drawable):
     canvas_original_width = image.width
     canvas_original_height = image.height
 
-    # get 16:9 width based on height
+    # get potential 16:9 width based on height
     width_16_9 = int(round(canvas_original_height / 9.0) * 16)
-    # get 16:9 height based on width
+    # get potential 16:9 height based on width
     height_16_9 = int(round(canvas_original_width / 16.0) * 9)
 
     # calculate new canvas width, height, background scale, and foreground offset, based on which dimension needs to be increased
