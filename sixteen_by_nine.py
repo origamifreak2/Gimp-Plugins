@@ -53,7 +53,7 @@ def sixteen_by_nine(image, drawable):
     pdb.gimp_layer_scale(background, bg_width, bg_height, True)
 
     # blur background
-    blur_radius = bg_height * bg_width / 35000
+    blur_radius = min(500., bg_height * bg_width / 35000)
     pdb.plug_in_gauss(image, background, blur_radius, blur_radius, 0)
 
     image.undo_group_end()
