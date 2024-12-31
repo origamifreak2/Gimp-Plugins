@@ -11,21 +11,26 @@ def sixteen_by_nine(image, drawable):
         pdb.gimp_message(drawable_type)
         pdb.gimp_message("Please select a layer")
         return
-    
-    image.undo_group_start()
-
-    # create duplicate layer to use as background
-    background = drawable.copy()
-    image.add_layer(background, 1)
 
     # get current/original canvas width and height
     canvas_original_width = image.width
     canvas_original_height = image.height
 
     # get potential 16:9 width based on height
-    width_16_9 = int(round(canvas_original_height / 9.0) * 16)
+    width_16_9 = int(round((canvas_original_height / 9.0) * 16))
     # get potential 16:9 height based on width
-    height_16_9 = int(round(canvas_original_width / 16.0) * 9)
+    height_16_9 = int(round((canvas_original_width / 16.0) * 9))
+
+    # check if image is already 16:9
+    if(canvas_original_width == width_16_9 and canvas_original_height == height_16_9):
+        pdb.gimp_message("Image is already 16:9")
+        return
+    
+    image.undo_group_start()
+
+    # create duplicate layer to use as background
+    background = drawable.copy()
+    image.add_layer(background, 1)
 
     # calculate new canvas width, height, background scale, and foreground offset, based on which dimension needs to be increased
     if(canvas_original_width < width_16_9): # canvas width needs to be increased
@@ -40,9 +45,6 @@ def sixteen_by_nine(image, drawable):
         bg_scale = float(height_16_9) / float(canvas_original_height)
         fg_off_x = 0
         fg_off_y = (height_16_9 - canvas_original_height) / 2
-    else: # canvas is already 16:9
-        pdb.gimp_message("Image is already 16:9")
-        return
 
     # resize canvas and center foreground
     pdb.gimp_image_resize(image, canvas_new_width, canvas_new_height, fg_off_x, fg_off_y)
