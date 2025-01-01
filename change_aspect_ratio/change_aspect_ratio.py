@@ -80,6 +80,25 @@ def one_by_one(image, drawable):
     change_aspect_ratio(image, drawable, 1, 1)
 
 
+# register functions
+register(
+          "change_aspect_ratio",
+          "Convert image to new aspect ratio with blurred background",
+          "Convert image to new aspect ratio with blurred background",
+          "origamifreak",
+          "Apache 2 license",
+          "2024",
+          "Custom Aspect Ratio",
+          "RGB*,GRAYSCALE*",
+          [
+              (PF_IMAGE, "image", "Input image", None),
+              (PF_DRAWABLE, "drawable", "Input drawable", None),
+              (PF_INT, "width_ratio", "Width ratio", 16),
+              (PF_INT, "height_ratio", "Height ratio", 9),
+          ],
+          [],
+          change_aspect_ratio, menu="<Image>/Image/Change Aspect Ratio")
+
 register(
           "sixteen_by_nine",
           "Convert image to 16 x 9 with blurred background",
