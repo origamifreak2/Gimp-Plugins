@@ -14,9 +14,9 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio):
     canvas_original_width = image.width
     canvas_original_height = image.height
 
-    # get potential aspect ratio width based on height and aspect ratio
+    # get potential new canvas width based on height and aspect ratio
     width_aspect_ratio = int(round((canvas_original_height / float(height_ratio)) * width_ratio))
-    # get potential aspect ratio height based on width and aspect ratio
+    # get potential new canvas height based on width and aspect ratio
     height_aspect_ratio = int(round((canvas_original_width / float(width_ratio)) * height_ratio))
 
     # check if image is already at desired aspect ratio
@@ -72,10 +72,12 @@ def four_by_three(image, drawable):
     change_aspect_ratio(image, drawable, 4, 3)
 
 
+# convert image to 3 x 2 with blurred background
 def three_by_two(image, drawable):
     change_aspect_ratio(image, drawable, 3, 2)
 
 
+# convert image to 1 x 1 with blurred background
 def one_by_one(image, drawable):
     change_aspect_ratio(image, drawable, 1, 1)
 
