@@ -26,10 +26,6 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio):
     
     image.undo_group_start()
 
-    # if image is in indexed color mode, convert to RGB
-    if(image.base_type==INDEXED):
-        pdb.gimp_image_convert_rgb(image)
-
     # create duplicate layer to use as background
     background = drawable.copy()
     image.add_layer(background, 1)
@@ -92,7 +88,7 @@ register(
           "Apache 2 license",
           "2024",
           "Sixteen By Nine",
-          "*",
+          "RGB*,GRAYSCALE*",
           [
               (PF_IMAGE, "image", "Input image", None),
               (PF_DRAWABLE, "drawable", "Input drawable", None),
@@ -108,7 +104,7 @@ register(
           "Apache 2 license",
           "2024",
           "Four By Three",
-          "*",
+          "RGB*,GRAYSCALE*",
           [
               (PF_IMAGE, "image", "Input image", None),
               (PF_DRAWABLE, "drawable", "Input drawable", None),
@@ -124,7 +120,7 @@ register(
           "Apache 2 license",
           "2024",
           "Three By Two",
-          "*",
+          "RGB*,GRAYSCALE*",
           [
               (PF_IMAGE, "image", "Input image", None),
               (PF_DRAWABLE, "drawable", "Input drawable", None),
@@ -140,7 +136,7 @@ register(
           "Apache 2 license",
           "2024",
           "One By One",
-          "*",
+          "RGB*,GRAYSCALE*",
           [
               (PF_IMAGE, "image", "Input image", None),
               (PF_DRAWABLE, "drawable", "Input drawable", None),
