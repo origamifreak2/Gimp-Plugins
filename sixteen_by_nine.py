@@ -60,6 +60,7 @@ def sixteen_by_nine(image, drawable):
     blur_radius = min(500., bg_height * bg_width / 35000)
     pdb.plug_in_gauss(image, background, blur_radius, blur_radius, 0)
 
+    # merge foreground and background and clip to canvas size
     layer = pdb.gimp_image_merge_down(image, drawable, 1)
 
     image.undo_group_end()
