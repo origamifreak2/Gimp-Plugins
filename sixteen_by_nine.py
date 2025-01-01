@@ -5,10 +5,8 @@ from gimpfu import *
 # convert image to 16 x 9 with blurred background
 def sixteen_by_nine(image, drawable):
 
-    # make sure drawable is a layer
-    drawable_type = pdb.gimp_drawable_type(drawable)
-    if drawable_type != 0 and drawable_type != 1:
-        pdb.gimp_message(drawable_type)
+    # if drawable is a channel, layer group, or mask, then return
+    if(isinstance(drawable,gimp.Channel) or isinstance(drawable,gimp.GroupLayer)):
         pdb.gimp_message("Please select a layer")
         return
 
@@ -27,6 +25,10 @@ def sixteen_by_nine(image, drawable):
         return
     
     image.undo_group_start()
+
+    # if image is in index color mode, convert to RGB
+    if(image.base_type==INDEXED):
+        pdb.gimp_image_convert_rgb(image)
 
     # create duplicate layer to use as background
     background = drawable.copy()
@@ -57,6 +59,8 @@ def sixteen_by_nine(image, drawable):
     # blur background
     blur_radius = min(500., bg_height * bg_width / 35000)
     pdb.plug_in_gauss(image, background, blur_radius, blur_radius, 0)
+
+    layer = pdb.gimp_image_merge_down(image, drawable, 1)
 
     image.undo_group_end()
 
