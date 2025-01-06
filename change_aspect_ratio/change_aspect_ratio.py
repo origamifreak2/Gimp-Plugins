@@ -9,6 +9,11 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio):
     if(isinstance(drawable,gimp.Channel) or isinstance(drawable,gimp.GroupLayer)):
         pdb.gimp_message("Please select a layer")
         return
+    
+    # if blur radius is less than 0 or greater than 500, then return
+    if(blur_radius < 0 or blur_radius > 500):
+        pdb.gimp_message("Blur radius must be between 0 and 500")
+        return
 
     # get current/original canvas width and height
     canvas_original_width = image.width
