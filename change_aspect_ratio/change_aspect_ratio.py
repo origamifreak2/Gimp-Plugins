@@ -75,9 +75,9 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
         elif(background_type == 2): # background color
             pdb.gimp_edit_bucket_fill(background, 1, 0, 100, 0, False, 1, 1)
         elif(background_type == 3): # other color
-            original_bg_context_color = pdb.gimp_context_get_background() # save original background color
-            pdb.gimp_context_set_background(background_color) # set new background color
-            pdb.gimp_edit_bucket_fill(background, 1, 0, 100, 0, False, 1, 1) # fill background with new color
+            original_bg_context_color = pdb.gimp_context_get_background() # save original active background color
+            pdb.gimp_context_set_background(background_color) # set new active background color
+            pdb.gimp_edit_bucket_fill(background, 1, 0, 100, 0, False, 1, 1) # fill background with new active background color
             pdb.gimp_context_set_background(original_bg_context_color) # restore original background color
 
         # merge foreground and background and clip to canvas size
