@@ -9,11 +9,6 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
     if(isinstance(drawable,gimp.Channel) or isinstance(drawable,gimp.GroupLayer)):
         pdb.gimp_message("Please select a layer")
         return
-    
-    # if blur radius is less than 0 or greater than 500, then return
-    if(blur_radius < 0 or blur_radius > 500):
-        pdb.gimp_message("Blur radius must be between 0 and 500")
-        return
 
     # get current/original canvas width and height
     canvas_original_width = image.width
@@ -71,17 +66,17 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
 
         # Fill the background with the specified color
         if(background_type == 1): # foreground color
-            pdb.gimp_edit_bucket_fill(background, 0, 0, 100, 0, False, 1, 1)
+            pdb.gimp_edit_bucket_fill(background, BUCKET_FILL_FG, LAYER_MODE_NORMAL_LEGACY, 100, 0, False, 1, 1)
         elif(background_type == 2): # background color
-            pdb.gimp_edit_bucket_fill(background, 1, 0, 100, 0, False, 1, 1)
+            pdb.gimp_edit_bucket_fill(background, BUCKET_FILL_BG, LAYER_MODE_NORMAL_LEGACY, 100, 0, False, 1, 1)
         elif(background_type == 3): # other color
             pdb.gimp_context_push()
             pdb.gimp_context_set_background(background_color) # set new background color
-            pdb.gimp_edit_bucket_fill(background, 1, 0, 100, 0, False, 1, 1) # fill background with new color
+            pdb.gimp_edit_bucket_fill(background, BUCKET_FILL_BG, LAYER_MODE_NORMAL_LEGACY, 100, 0, False, 1, 1) # fill background with new color
             pdb.gimp_context_pop()
 
         # merge foreground and background and clip to canvas size
-        layer = pdb.gimp_image_merge_down(image, drawable, 1)
+        layer = pdb.gimp_image_merge_down(image, drawable, CLIP_TO_IMAGE)
 
     else: # transparent background case: do nothing since resized canvas background is already transparent
         pass
@@ -105,7 +100,7 @@ register(
               (PF_INT, "width_ratio", "Width Ratio", 16),
               (PF_INT, "height_ratio", "Height Ratio", 9),
               (PF_OPTION, "background_type", "Background Type", 0, ['blurred copy', 'active foreground color', 'active background color', 'other color', 'transparent']),
-              (PF_INT, "blur_radius", "Blur Radius", 100),
+              (PF_SLIDER, "blur_radius", "Blur Radius", 100, (0, 500, 1)),
               (PF_COLOR, "background_color", "Other Color", (0, 0, 0, 255)),
           ],
           [],
