@@ -64,7 +64,7 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
         # merge foreground and background and clip to canvas size
         layer = pdb.gimp_image_merge_down(image, drawable, 1)
 
-    elif(background_type == 1 or background_type == 2 or background_type == 3): # color background
+    elif(background_type in [1,2,3]): # color background
         # create new layer to use as background
         background = pdb.gimp_layer_new(image, canvas_new_width, canvas_new_height, 0, "Background", 100, 0)
         image.add_layer(background, 1)
@@ -75,16 +75,15 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
         elif(background_type == 2): # background color
             pdb.gimp_edit_bucket_fill(background, 1, 0, 100, 0, False, 1, 1)
         elif(background_type == 3): # other color
-            original_bg_context_color = pdb.gimp_context_get_background() # save original active background color
-            pdb.gimp_context_set_background(background_color) # set new active background color
-            pdb.gimp_edit_bucket_fill(background, 1, 0, 100, 0, False, 1, 1) # fill background with new active background color
-            pdb.gimp_context_set_background(original_bg_context_color) # restore original background color
+            pdb.gimp_context_push()
+            pdb.gimp_context_set_background(background_color) # set new background color
+            pdb.gimp_edit_bucket_fill(background, 1, 0, 100, 0, False, 1, 1) # fill background with new color
+            pdb.gimp_context_pop()
 
         # merge foreground and background and clip to canvas size
         layer = pdb.gimp_image_merge_down(image, drawable, 1)
 
-    elif(background_type == 4): # transparent background
-        # do nothing since resized canvas background is already transparent
+    else: # transparent background case: do nothing since resized canvas background is already transparent
         pass
 
     image.undo_group_end()
