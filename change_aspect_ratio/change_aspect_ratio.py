@@ -50,10 +50,9 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
         image.add_layer(background, 1)
 
         # resize background
-        bg_width = canvas_original_width * bg_scale
-        bg_height = canvas_original_height * bg_scale
-        pdb.gimp_layer_scale(background, bg_width, bg_height, True)
-        # background.scale(bg_width, bg_height, 0)
+        bg_width = int(round(canvas_original_width * bg_scale))
+        bg_height = int(round(canvas_original_height * bg_scale))
+        background.scale(bg_width, bg_height, bg_width // 2)
 
         # blur background
         pdb.plug_in_gauss(image, background, blur_radius, blur_radius, 0)
