@@ -7,7 +7,7 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
     
     # if drawable is a channel, layer group, or mask, then return
     if(isinstance(drawable,gimp.Channel) or isinstance(drawable,gimp.GroupLayer)):
-        pdb.gimp_message("Please select a layer")
+        gimp.message("Please select a layer")
         return
 
     # get current/original canvas width and height
@@ -21,7 +21,7 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
 
     # check if image is already at desired aspect ratio
     if(canvas_original_width == width_aspect_ratio and canvas_original_height == height_aspect_ratio):
-        pdb.gimp_message("Image is already " + str(width_ratio) + " x " + str(height_ratio))
+        gimp.message("Image is already " + str(width_ratio) + " x " + str(height_ratio))
         return
 
     # calculate new canvas width, height, background scale, and foreground offset, based on which dimension needs to be increased
@@ -39,9 +39,10 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
         fg_off_y = (height_aspect_ratio - canvas_original_height) / 2
 
     image.undo_group_start()
+    gimp.context_push()
 
     # resize canvas and center foreground
-    pdb.gimp_image_resize(image, canvas_new_width, canvas_new_height, fg_off_x, fg_off_y)
+    image.resize(canvas_new_width, canvas_new_height, fg_off_x, fg_off_y)
 
     if(background_type == 0): # blur background
         # create duplicate layer to use as background
@@ -57,30 +58,25 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
         pdb.plug_in_gauss(image, background, blur_radius, blur_radius, 0)
 
         # merge foreground and background and clip to canvas size
-        layer = pdb.gimp_image_merge_down(image, drawable, 1)
+        layer = image.merge_down(drawable, CLIP_TO_IMAGE)
 
     elif(background_type in [1,2,3]): # color background
         # create new layer to use as background
-        background = pdb.gimp_layer_new(image, canvas_new_width, canvas_new_height, 0, "Background", 100, 0)
+        background = gimp.layer(image, "Background", canvas_new_width, canvas_new_height, RGB_IMAGE, 100, NORMAL_MODE)
         image.add_layer(background, 1)
 
         # Fill the background with the specified color
-        if(background_type == 1): # foreground color
-            pdb.gimp_edit_bucket_fill(background, BUCKET_FILL_FG, LAYER_MODE_NORMAL_LEGACY, 100, 0, False, 1, 1)
-        elif(background_type == 2): # background color
-            pdb.gimp_edit_bucket_fill(background, BUCKET_FILL_BG, LAYER_MODE_NORMAL_LEGACY, 100, 0, False, 1, 1)
-        elif(background_type == 3): # other color
-            pdb.gimp_context_push()
-            pdb.gimp_context_set_background(background_color) # set new background color
-            pdb.gimp_edit_bucket_fill(background, BUCKET_FILL_BG, LAYER_MODE_NORMAL_LEGACY, 100, 0, False, 1, 1) # fill background with new color
-            pdb.gimp_context_pop()
+        color=[gimp.get_foreground(),gimp.get_background(),background_color][background_type-1]
+        gimp.set_foreground(color)
+        background.fill(FILL_FOREGROUND)
 
         # merge foreground and background and clip to canvas size
-        layer = pdb.gimp_image_merge_down(image, drawable, CLIP_TO_IMAGE)
+        layer = image.merge_down(drawable, CLIP_TO_IMAGE)
 
     else: # transparent background case: do nothing since resized canvas background is already transparent
         pass
 
+    gimp.context_pop()
     image.undo_group_end()
 
 
