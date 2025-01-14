@@ -62,7 +62,7 @@ def change_aspect_ratio(image, drawable, width_ratio, height_ratio, background_t
 
     elif(background_type in [1,2,3]): # color background
         # create new layer to use as background
-        background = gimp.layer(image, "Background", canvas_new_width, canvas_new_height, RGB_IMAGE, 100, NORMAL_MODE)
+        background = pdb.gimp_layer_new(image, canvas_new_width, canvas_new_height, RGB_IMAGE, "Background", 100, NORMAL_MODE)
         image.add_layer(background, 1)
 
         # Fill the background with the specified color
